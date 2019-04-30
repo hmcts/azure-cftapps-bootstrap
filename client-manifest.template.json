@@ -1,0 +1,12 @@
+[
+  {
+    "resourceAccess": [
+      {
+        "additionalProperties": null,
+        "id": "4e4ffcaf-4954-40b3-8d4f-f2f7fefcbe6b",
+        "type": "Scope"
+      }
+    ],
+    "resourceAppId": "${SERVER_APP_ID}"
+  }
+]
