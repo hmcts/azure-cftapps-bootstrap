@@ -62,7 +62,7 @@ az role definition update --role-definition '{ \
 * Storage account used for storing terraform state
 * 2 AD applications for AKS RBAC setup
 * SP for AKS cluster operation
-* SP for managing resources in the cluster - contributor + "Role assigner" custom role
+* SP for managing resources in the subscription - contributor + "Role assigner" custom role
 
 ## Running the script: 
 
