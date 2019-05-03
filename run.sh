@@ -12,8 +12,8 @@ fi
 ENV="${1}"
 ROLE_ASSIGNMENT_ROLE_DEFINITION_ID="${2}"
 
-SERVER_APP_NAME="dcd_aks_${ENV}-server"
-CLIENT_APP_NAME="dcd_aks_${ENV}-client"
+SERVER_APP_NAME="dcd_app_aks_cftapps_${ENV}_server_v2"
+CLIENT_APP_NAME="dcd_app_aks_cftapps_${ENV}_client_v2"
 
 CORE_INFRA_RG="core-infra-${ENV}"
 VAULT_NAME="cftapps-${ENV}"
@@ -89,8 +89,7 @@ keyvaultSecretSet "aks-server-app-password" ${SERVER_APP_PASSWORD}
 echo "Ignore the warning about \"Property 'groupMembershipClaims' not found on root\""
 az ad app update --id ${SERVER_APP_ID} --set groupMembershipClaims=All
 
-envsubst < client-manifest.template.json > client-manifest.json
-
+sed "s/%%SERVER_APP_ID%%/${SERVER_APP_ID}/g" client-manifest.template.json > client-manifest.json
 sleep 3
 
 az ad app permission admin-consent --id ${SERVER_APP_ID}

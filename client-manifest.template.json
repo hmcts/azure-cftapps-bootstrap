@@ -7,6 +7,6 @@
         "type": "Scope"
       }
     ],
-    "resourceAppId": "${SERVER_APP_ID}"
+    "resourceAppId": "%%SERVER_APP_ID%%"
   }
 ]

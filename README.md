@@ -4,7 +4,6 @@ Creates all the required infrastructure for a new compute subscription
 
 Requires:
 * azure-cli >= 2.0.62
-* envsubst (brew install gettext && brew link --force gettext )
 * jq (brew install jq)
 
 
