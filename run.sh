@@ -66,7 +66,6 @@ az keyvault create --name ${VAULT_NAME} \
   --enable-soft-delete true \
   --enabled-for-deployment true  \
   --tags "Team Name=Software Engineering" environment=${ENV} \
-  --no-self-perms \
   --enabled-for-template-deployment true
   
 # addKeyvaultFullAccessPolicy ${VAULT_NAME} 9189d86a-e260-4c3d-8227-803123cdce84 # aks-cluster-admins - for RPE tenant
