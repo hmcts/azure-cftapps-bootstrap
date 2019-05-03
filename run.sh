@@ -50,7 +50,7 @@ fi
 
 az group create --location ${LOCATION} --name ${CORE_INFRA_RG} --tags "Team Name=Software Engineering" environment=${ENV}
 
-az storage account create --name hmctscompute${ENV//-/} \
+az storage account create --name cftapps${ENV//-/} \
   --resource-group ${CORE_INFRA_RG} \
   --sku Standard_LRS \
   --encryption-services blob \
@@ -108,10 +108,10 @@ sleep 5
 az ad app permission grant --id ${CLIENT_SP_OBJECT_ID} --api ${SERVER_APP_ID}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id http://dcd_aks_compute_${ENV} || true
+  az ad sp delete --id http://dcd_aks_cftapps_${ENV} || true
 fi
 
-AKS_SP=$(az ad sp create-for-rbac --skip-assignment --name http://dcd_aks_compute_${ENV})
+AKS_SP=$(az ad sp create-for-rbac --skip-assignment --name http://dcd_aks_cftapps_${ENV})
 
 AKS_SP_APP_ID=$(echo ${AKS_SP} | jq -r .appId)
 AKS_SP_APP_PASSWORD=$(echo ${AKS_SP} | jq -r .password)
@@ -120,14 +120,14 @@ keyvaultSecretSet "aks-sp-app-id" ${AKS_SP_APP_ID}
 keyvaultSecretSet "aks-sp-app-password" ${AKS_SP_APP_PASSWORD}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id http://dcd_compute_${ENV} || true
+  az ad sp delete --id http://dcd_cftapps_${ENV} || true
 fi
 
-SUBSCRIPTION_SP=$(az ad sp create-for-rbac  --name http://dcd_compute_${ENV})
+SUBSCRIPTION_SP=$(az ad sp create-for-rbac  --name http://dcd_cftapps_${ENV})
 SUBSCRIPTION_SP_APP_ID=$(echo ${AKS_SP} | jq -r .appId)
 SUBSCRIPTION_SP_APP_PASSWORD=$(echo ${AKS_SP} | jq -r .password)
 
-addKeyvaultFullAccessPolicySP ${VAULT_NAME} http://dcd_compute_${ENV}
+addKeyvaultFullAccessPolicySP ${VAULT_NAME} http://dcd_cftapps_${ENV}
 
 keyvaultSecretSet "sp-app-id" ${SUBSCRIPTION_SP_APP_ID}
 keyvaultSecretSet "sp-app-password" ${SUBSCRIPTION_SP_APP_PASSWORD}
