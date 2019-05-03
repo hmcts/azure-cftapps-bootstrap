@@ -16,7 +16,7 @@ SERVER_APP_NAME="dcd_aks_${ENV}-server"
 CLIENT_APP_NAME="dcd_aks_${ENV}-client"
 
 CORE_INFRA_RG="core-infra-${ENV}"
-VAULT_NAME="hmcts-compute1-${ENV}"
+VAULT_NAME="cftapps-${ENV}"
 LOCATION="uksouth"
 
 function usage() {
