@@ -1,6 +1,6 @@
-# azure-compute-bootstrap
+# azure-cftapps-bootstrap
 
-Creates all the required infrastructure for a new compute subscription
+Creates all the required infrastructure for a new cftapps subscription
 
 Requires:
 * azure-cli >= 2.0.62
