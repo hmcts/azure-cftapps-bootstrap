@@ -125,8 +125,8 @@ if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
 fi
 
 SUBSCRIPTION_SP=$(az ad sp create-for-rbac  --name ${SUBSCRIPTION_SP_NAME})
-SUBSCRIPTION_SP_APP_ID=$(echo ${AKS_SP} | jq -r .appId)
-SUBSCRIPTION_SP_APP_PASSWORD=$(echo ${AKS_SP} | jq -r .password)
+SUBSCRIPTION_SP_APP_ID=$(echo ${SUBSCRIPTION_SP} | jq -r .appId)
+SUBSCRIPTION_SP_APP_PASSWORD=$(echo ${SUBSCRIPTION_SP} | jq -r .password)
 
 addKeyvaultFullAccessPolicySP ${VAULT_NAME} ${SUBSCRIPTION_SP_NAME}
 
