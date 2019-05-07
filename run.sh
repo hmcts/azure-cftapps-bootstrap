@@ -14,6 +14,8 @@ ROLE_ASSIGNMENT_ROLE_DEFINITION_ID="${2}"
 
 SERVER_APP_NAME="dcd_app_aks_cftapps_${ENV}_server_v2"
 CLIENT_APP_NAME="dcd_app_aks_cftapps_${ENV}_client_v2"
+SUBSCRIPTION_SP_NAME="http://dcd_sp_sub_cftapps_${ENV}_v2"
+AKS_SP_NAME="http://dcd_sp_aks_cftapps_${ENV}_v2"
 
 CORE_INFRA_RG="core-infra-${ENV}"
 VAULT_NAME="cftapps-${ENV}"
@@ -107,10 +109,10 @@ sleep 5
 az ad app permission grant --id ${CLIENT_SP_OBJECT_ID} --api ${SERVER_APP_ID}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id http://dcd_sp_aks_cftapps_${ENV}_v2 || true
+  az ad sp delete --id ${AKS_SP_NAME} || true
 fi
 
-AKS_SP=$(az ad sp create-for-rbac --skip-assignment --name http://dcd_sp_aks_cftapps_${ENV}_v2)
+AKS_SP=$(az ad sp create-for-rbac --skip-assignment --name ${AKS_SP_NAME})
 
 AKS_SP_APP_ID=$(echo ${AKS_SP} | jq -r .appId)
 AKS_SP_APP_PASSWORD=$(echo ${AKS_SP} | jq -r .password)
@@ -119,14 +121,14 @@ keyvaultSecretSet "aks-sp-app-id" ${AKS_SP_APP_ID}
 keyvaultSecretSet "aks-sp-app-password" ${AKS_SP_APP_PASSWORD}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id http://dcd_sp_sub_cftapps_${ENV}_v2 || true
+  az ad sp delete --id ${SUBSCRIPTION_SP_NAME} || true
 fi
 
-SUBSCRIPTION_SP=$(az ad sp create-for-rbac  --name http://dcd_sp_sub_cftapps_${ENV}_v2)
+SUBSCRIPTION_SP=$(az ad sp create-for-rbac  --name ${SUBSCRIPTION_SP_NAME})
 SUBSCRIPTION_SP_APP_ID=$(echo ${AKS_SP} | jq -r .appId)
 SUBSCRIPTION_SP_APP_PASSWORD=$(echo ${AKS_SP} | jq -r .password)
 
-addKeyvaultFullAccessPolicySP ${VAULT_NAME} http://dcd_cftapps_${ENV}
+addKeyvaultFullAccessPolicySP ${VAULT_NAME} ${SUBSCRIPTION_SP_NAME}
 
 keyvaultSecretSet "sp-app-id" ${SUBSCRIPTION_SP_APP_ID}
 keyvaultSecretSet "sp-app-password" ${SUBSCRIPTION_SP_APP_PASSWORD}
@@ -142,3 +144,6 @@ echo "Client app display name: ${CLIENT_APP_NAME}"
 
 echo "AKS SP client id: ${AKS_SP_APP_ID}"
 echo "AKS SP client secret: ${AKS_SP_APP_PASSWORD}"
+
+echo "Subscription SP app ID: ${SUBSCRIPTION_SP_APP_ID}"
+echo "Subscription SP app password: ${SUBSCRIPTION_SP_APP_PASSWORD}"
