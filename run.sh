@@ -96,7 +96,7 @@ sleep 3
 
 az ad app permission admin-consent --id ${SERVER_APP_ID}
 
-CLIENT_APP_ID=$(az ad app create --display-name ${CLIENT_APP_NAME} --native-app --reply-urls http://localhost/client --required-resource-accesses @client-manifest.json  --query appId -o tsv)
+CLIENT_APP_ID=$(az ad app create --display-name ${CLIENT_APP_NAME} --native-app --reply-urls http://localhost/client https://ininprodeusuxbase.microsoft.com/* --required-resource-accesses @client-manifest.json  --query appId -o tsv)
 CLIENT_SP_OBJECT_ID=$(az ad sp create --id ${CLIENT_APP_ID} --query objectId -o tsv)
 
 keyvaultSecretSet "aks-client-sp-object-id" ${CLIENT_SP_OBJECT_ID}
