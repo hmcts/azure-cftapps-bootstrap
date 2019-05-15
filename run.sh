@@ -10,7 +10,6 @@ else
 fi
 
 ENV="${1}"
-ROLE_ASSIGNMENT_ROLE_DEFINITION_ID="${2}"
 
 SERVER_APP_NAME="dcd_app_aks_cftapps_${ENV}_server_v2"
 CLIENT_APP_NAME="dcd_app_aks_cftapps_${ENV}_client_v2"
@@ -22,7 +21,7 @@ VAULT_NAME="cftapps-${ENV}"
 LOCATION="uksouth"
 
 function usage() {
-  echo "usage: ./run.sh <env> <role-assignment-role-id>" 
+  echo "usage: ./run.sh <env>" 
 }
 
 function keyvaultSecretSet() {
@@ -45,7 +44,7 @@ function addKeyvaultFullAccessPolicySP() {
     --key-permissions backup create decrypt delete encrypt get import list purge recover restore sign unwrapKey update verify wrapKey
 }
 
-if [ -z "${ENV}" ] || [ -z "${ROLE_ASSIGNMENT_ROLE_DEFINITION_ID}" ] ; then
+if [ -z "${ENV}" ] ; then
   usage
   exit 1
 fi
@@ -124,7 +123,7 @@ if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
   az ad sp delete --id ${SUBSCRIPTION_SP_NAME} || true
 fi
 
-SUBSCRIPTION_SP=$(az ad sp create-for-rbac  --name ${SUBSCRIPTION_SP_NAME})
+SUBSCRIPTION_SP=$(az ad sp create-for-rbac --skip-assignment  --name ${SUBSCRIPTION_SP_NAME})
 SUBSCRIPTION_SP_APP_ID=$(echo ${SUBSCRIPTION_SP} | jq -r .appId)
 SUBSCRIPTION_SP_APP_PASSWORD=$(echo ${SUBSCRIPTION_SP} | jq -r .password)
 
@@ -132,8 +131,6 @@ addKeyvaultFullAccessPolicySP ${VAULT_NAME} ${SUBSCRIPTION_SP_NAME}
 
 keyvaultSecretSet "sp-app-id" ${SUBSCRIPTION_SP_APP_ID}
 keyvaultSecretSet "sp-app-password" ${SUBSCRIPTION_SP_APP_PASSWORD}
-
-az role assignment create --assignee ${SUBSCRIPTION_SP_APP_ID} --role ${ROLE_ASSIGNMENT_ROLE_DEFINITION_ID}
 
 echo "Server app ID: ${SERVER_APP_ID}"
 echo "Server app password: ${SERVER_APP_PASSWORD}"
