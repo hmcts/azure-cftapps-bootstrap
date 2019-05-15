@@ -6,54 +6,6 @@ Requires:
 * azure-cli >= 2.0.62
 * jq (brew install jq)
 
-
-## Role assignment setup:
-
-Initial creation:
-```bash
-az role definition create --role-definition '{ \
-    "Name": "Role assigner", \
-    "Description": "Allows performing role assignments.", \
-    "Actions": [ \
-        "Microsoft.Authorization/roleAssignments/read", \
-        "Microsoft.Authorization/roleAssignments/write", \
-        "Microsoft.Authorization/roleAssignments/delete", \
-    ], \
-    "AssignableScopes": ["/subscriptions/<sub-id>"] \
-}'
-
-```
-
-Updating it:
-
-First find the ID:
-```bash 
-az role definition list --query "[?roleName=='Role assigner'].id" -o tsv
-```
-
-and the current scopes:
-```bash
-az role definition list --query "[?roleName=='Role assigner'].assignableScopes"
-```
-
-then replace the id and assignable scopes and replace the below:
-
-```bash
-az role definition update --role-definition '{ \
-    "roleName": "Role assigner", \
-    "id": "<query-for-this> e.g. /subscriptions/50f88971-400a-4855-8924-c38a47112ce4/providers/Microsoft.Authorization/roleDefinitions/d9e36deb-d0a5-47a1-9065-381822359971", \
-    "roleType": "CustomRole", \
-    "type": "Microsoft.Authorization/roleDefinitions", \
-    "Description": "Allows performing role assignments.", \
-    "Actions": [ \
-        "Microsoft.Authorization/roleAssignments/read", \
-        "Microsoft.Authorization/roleAssignments/write", \
-        "Microsoft.Authorization/roleAssignments/delete", \
-    ], \
-    "AssignableScopes": ["/subscriptions/<id-1>", "/subscriptions/<id-2>"] \
-}'
-```
-
 ## What does this create?
 
 * Key Vault for storing credentials created as part of this run
@@ -61,7 +13,7 @@ az role definition update --role-definition '{ \
 * Storage account used for storing terraform state
 * 2 AD applications for AKS RBAC setup
 * SP for AKS cluster operation
-* SP for managing resources in the subscription - contributor + "Role assigner" custom role
+* SP for managing resources in the subscription - Contributor on resource group(s) assigned through ops-resource-groups
 
 ## Running the script: 
 
@@ -79,11 +31,11 @@ az account set -s <sub-id>
 
 
 ```bash
-./run.sh <env-name> <role-assigner-role-definition-id:
+./run.sh <env-name>
 ```
 
 If there's an error and you need to re-run you can add the `--force` argument, do not use this on an in use subscription as it will delete the SP and applications needed for AKS to function:
 
 ```bash
-./run.sh --force <env-name> <role-assigner-role-definition-id e.g. d9e36deb-d0a5-47a1-9065-381822359971>:
+./run.sh --force <env-name>
 ```
