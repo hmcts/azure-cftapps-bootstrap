@@ -150,7 +150,7 @@ if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
   az ad sp delete --id ${SUBSCRIPTION_SP_NAME} || true
 fi
 
-SUBSCRIPTION_SP=$(az ad sp create-for-rbac --skip-assignment  --name ${SUBSCRIPTION_SP_NAME})
+SUBSCRIPTION_SP=$(az ad sp create-for-rbac --role Reader  --name ${SUBSCRIPTION_SP_NAME})
 SUBSCRIPTION_SP_APP_ID=$(echo ${SUBSCRIPTION_SP} | jq -r .appId)
 SUBSCRIPTION_SP_APP_PASSWORD=$(echo ${SUBSCRIPTION_SP} | jq -r .password)
 SUBSCRIPTION_SP_OBJECT_ID=$(az ad sp show --id ${SUBSCRIPTION_SP_APP_ID} --query objectId -o tsv)
