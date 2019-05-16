@@ -21,7 +21,7 @@ esac
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
 		$SUB="cftapps";;
-	"mgmt"|"MGNT"|"Mgtm")
+	"mgmt"|"MGMT"|"Mgmt")
 		$SUB="mgmt";;
 	"papi"|"PAPI"|"Papi")
 		$SUB="papi";;
