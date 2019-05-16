@@ -142,8 +142,10 @@ AKS_SP=$(az ad sp create-for-rbac --skip-assignment --name ${AKS_SP_NAME})
 
 AKS_SP_APP_ID=$(echo ${AKS_SP} | jq -r .appId)
 AKS_SP_APP_PASSWORD=$(echo ${AKS_SP} | jq -r .password)
+AKS_SP_OBJECT_ID=$(az ad sp show --id ${AKS_SP_APP_ID} --query objectId -o tsv)
 
 keyvaultSecretSet "aks-sp-app-id" ${AKS_SP_APP_ID}
+keyvaultSecretSet "aks-sp-object-id" ${AKS_SP_OBJECT_ID}
 keyvaultSecretSet "aks-sp-app-password" ${AKS_SP_APP_PASSWORD}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
