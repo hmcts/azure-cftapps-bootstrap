@@ -9,15 +9,35 @@ else
   DELETE_NON_IDEMPOTENT_RESOURCES="false"
 fi
 
-ENV="${1}"
+case "${1}" in
+	"sbox"|"SBOX"|"Sbox")
+		$ENV="sbox";;
+	*)
+		echo "Invalid environment. Exiting"
+		exit 1
+		;;
+esac
 
-SERVER_APP_NAME="dcd_app_aks_cftapps_${ENV}_server_v2"
-CLIENT_APP_NAME="dcd_app_aks_cftapps_${ENV}_client_v2"
-SUBSCRIPTION_SP_NAME="http://dcd_sp_sub_cftapps_${ENV}_v2"
-AKS_SP_NAME="http://dcd_sp_aks_cftapps_${ENV}_v2"
+case "${2}" in
+	"cftapps"|"CFTAPPS"|"CftApps")
+		$SUB="cftapps";;
+	"mgmt"|"MGNT"|"Mgtm")
+		$SUB="mgmt";;
+	"papi"|"PAPI"|"Papi")
+		$SUB="papi";;
+	*)
+		echo "Invalid subscription. Exiting"
+		exit 1
+		;;
+esac
+
+SERVER_APP_NAME="dcd_app_aks_${SUB}_${ENV}_server_v2"
+CLIENT_APP_NAME="dcd_app_aks_${SUB}_${ENV}_client_v2"
+SUBSCRIPTION_SP_NAME="http://dcd_sp_sub_${SUB}_${ENV}_v2"
+AKS_SP_NAME="http://dcd_sp_aks_${SUB}_${ENV}_v2"
 
 CORE_INFRA_RG="core-infra-${ENV}"
-VAULT_NAME="cftapps-${ENV}"
+VAULT_NAME="${SUB}-${ENV}"
 LOCATION="uksouth"
 
 function usage() {
