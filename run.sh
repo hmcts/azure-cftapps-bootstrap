@@ -33,6 +33,7 @@ esac
 
 SERVER_APP_NAME="dcd_app_aks_${SUB}_${ENV}_server_v2"
 CLIENT_APP_NAME="dcd_app_aks_${SUB}_${ENV}_client_v2"
+OPERATIONS_SP_NAME="dcd_sp_ado_${ENV}_operations_v2"
 SUBSCRIPTION_SP_NAME="http://dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="http://dcd_sp_aks_${SUB}_${ENV}_v2"
 
@@ -93,6 +94,10 @@ az keyvault create --name ${VAULT_NAME} \
 
 addKeyvaultFullAccessPolicy ${VAULT_NAME} 300e771f-856c-45cc-b899-40d78281e9c1 # devops
 addKeyvaultFullAccessPolicy ${VAULT_NAME} c36eaede-a0ae-4967-8fed-0a02960b1370 # platform-engineering
+
+OPERATIONS_SP_APP_ID=$(az ad sp list --all --query  "[?appDisplayName=='${OPERATIONS_SP_NAME}'].{ appId: appId }" -o tsv)
+
+addKeyvaultFullAccessPolicySP ${VAULT_NAME} ${OPERATIONS_SP_APP_ID}
 
 SERVER_APP_PASSWORD=$(openssl rand -base64 32 | grep -o  '[[:alnum:]]' | tr -d '\n')
 
