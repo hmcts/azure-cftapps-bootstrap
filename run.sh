@@ -72,7 +72,7 @@ fi
 
 az group create --location ${LOCATION} --name ${CORE_INFRA_RG} --tags "Team Name=Software Engineering" environment=${ENV}
 
-az storage account create --name cftapps${ENV//-/} \
+az storage account create --name ${SUB}${ENV//-/} \
   --resource-group ${CORE_INFRA_RG} \
   --sku Standard_LRS \
   --encryption-services blob \
