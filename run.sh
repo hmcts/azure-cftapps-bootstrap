@@ -11,7 +11,7 @@ fi
 
 case "${1}" in
 	"sbox"|"SBOX"|"Sbox")
-		$ENV="sbox";;
+		ENV="sbox";;
 	*)
 		echo "Invalid environment. Exiting"
 		exit 1
@@ -20,11 +20,11 @@ esac
 
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
-		$SUB="cftapps";;
+		SUB="cftapps";;
 	"mgmt"|"MGMT"|"Mgmt")
-		$SUB="mgmt";;
+		SUB="mgmt";;
 	"papi"|"PAPI"|"Papi")
-		$SUB="papi";;
+		SUB="papi";;
 	*)
 		echo "Invalid subscription. Exiting"
 		exit 1
