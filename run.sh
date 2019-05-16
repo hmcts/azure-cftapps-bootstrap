@@ -81,6 +81,8 @@ az storage account create --name ${SUB}${ENV//-/} \
   --tags "Team Name=Software Engineering" environment=${ENV} \
   --https-only true
 
+az storage container create  --account-name ${SUB}${ENV//-/}  --name tfstate
+
 az keyvault create --name ${VAULT_NAME} \
   --resource-group ${CORE_INFRA_RG}  \
   --location ${LOCATION} \
