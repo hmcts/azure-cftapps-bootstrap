@@ -11,7 +11,9 @@ fi
 
 case "${1}" in
 	"sbox"|"SBOX"|"Sbox")
-		ENV="sbox";;
+		ENV="sbox"
+    LONG_ENV="sandbox"
+    CRITICALITY="Low"
 	*)
 		echo "Invalid environment. Exiting"
 		exit 1
@@ -37,9 +39,20 @@ OPERATIONS_SP_NAME="dcd_sp_ado_${ENV}_operations_v2"
 SUBSCRIPTION_SP_NAME="http://dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="http://dcd_sp_aks_${SUB}_${ENV}_v2"
 
-CORE_INFRA_RG="core-infra-${ENV}"
+CORE_INFRA_RG="core-infra-${ENV}-rg"
 VAULT_NAME="${SUB}-${ENV}"
 LOCATION="uksouth"
+
+COMMON_TAGS=(
+  "managedBy=Platform Engineering" 
+  "solutionOwner=CFT" 
+  "activityName=AKS" 
+  "dataClassification=internal" 
+  "automation={}" 
+  "costCentre=10245117" 
+  "environment=${LONG_ENV}" 
+  "criticality=${CRITICALITY}"
+)
 
 function usage() {
   echo "usage: ./run.sh <env>" 
@@ -70,7 +83,7 @@ if [ -z "${ENV}" ] ; then
   exit 1
 fi
 
-az group create --location ${LOCATION} --name ${CORE_INFRA_RG} --tags "Team Name=Software Engineering" environment=${ENV}
+az group create --location ${LOCATION} --name ${CORE_INFRA_RG} --tags "${COMMON_TAGS[@]}"
 
 az storage account create --name ${SUB}${ENV//-/} \
   --resource-group ${CORE_INFRA_RG} \
@@ -78,7 +91,7 @@ az storage account create --name ${SUB}${ENV//-/} \
   --encryption-services blob \
   --kind StorageV2 \
   --location ${LOCATION} \
-  --tags "Team Name=Software Engineering" environment=${ENV} \
+  --tags "${COMMON_TAGS[@]}" \
   --https-only true
 
 az storage container create  --account-name ${SUB}${ENV//-/}  --name tfstate
@@ -89,7 +102,7 @@ az keyvault create --name ${VAULT_NAME} \
   --enable-purge-protection true \
   --enable-soft-delete true \
   --enabled-for-deployment true  \
-  --tags "Team Name=Software Engineering" environment=${ENV} \
+  --tags "${COMMON_TAGS[@]}" \
   --enabled-for-template-deployment true
   
 # addKeyvaultFullAccessPolicy ${VAULT_NAME} 9189d86a-e260-4c3d-8227-803123cdce84 # aks-cluster-admins - for RPE tenant
