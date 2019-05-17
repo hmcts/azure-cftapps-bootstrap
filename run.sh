@@ -54,17 +54,6 @@ COMMON_TAGS=(
   "criticality=${CRITICALITY}"
 )
 
-  # common_tags = {
-  #   "managedBy"          = "Platform Engineering"
-  #   "solutionOwner"      = "CFT"
-  #   "activityName"       = "Platform Engineering"
-  #   "dataClassification" = "internal"
-  #   "automation"         = {}
-  #   "costCentre"         = "10245117"             // until we get a better one, this is the generic cft contingency one
-  #   "environment"        = "sandbox"
-  #   "criticality"        = "Low"
-  # }
-
 function usage() {
   echo "usage: ./run.sh <env>" 
 }
