@@ -12,8 +12,14 @@ fi
 case "${1}" in
 	"sbox"|"SBOX"|"Sbox")
 		ENV="sbox"
-    LONG_ENV="sandbox"
-    CRITICALITY="Low"
+    		LONG_ENV="sandbox"
+    		CRITICALITY="Low"
+		;;
+	"demo"|"DEMO"|"Demo")
+		ENV="demo"
+    		LONG_ENV="demo"
+    		CRITICALITY="Medium"
+		;;
 	*)
 		echo "Invalid environment. Exiting"
 		exit 1
