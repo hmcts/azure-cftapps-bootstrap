@@ -39,3 +39,36 @@ If there's an error and you need to re-run you can add the `--force` argument, d
 ```bash
 ./run.sh --force <env-name>
 ```
+
+## GitHub secrets:
+
+GitHub users need to be created manually
+The format is:
+
+Username: hmcts-flux-env
+Email: flux-env@hmcts.net
+
+Email address is made by creating a group in office 365 and after creation updating it to allow external email addresses to send to it
+
+You'll need to enable 2FA on the account, copy the recovery codes to a file on your machine
+Set the users avatar to have the flux.png image that's stored in this repo
+
+Generate a private key with:
+```
+$ ssh-keygen -f ~/.ssh/hmcts-flux-env
+```
+
+Upload the public key to the users github account
+
+Ask someone with [GitHub owner permission](https://github.com/orgs/hmcts/people?utf8=%E2%9C%93&query=+role%3Aowner) to add the user to the organisation in the [Flux](https://github.com/orgs/hmcts/teams/flux/members) team 
+
+Then store all the values in the subscription key vault with the following script:
+```
+$ ./set-github-secrets
+usage: ./set-github-secrets <subscription-display-name> <key_vault> <username> <password> <private_key_path> <recovery_tokens_path>
+```
+e.g.
+```
+$ ./set-github-secrets DCD-MGMT-SBOX mgmt-sbox hmcts-flux-mgmt-sandbox "the-user-password" ~/.ssh/flux-mgmt-sandbox /tmp/recovery-tokens
+```
+
