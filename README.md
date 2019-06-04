@@ -72,3 +72,21 @@ e.g.
 $ ./set-github-secrets DCD-MGMT-SBOX mgmt-sbox hmcts-flux-mgmt-sandbox "the-user-password" ~/.ssh/flux-mgmt-sandbox /tmp/recovery-tokens
 ```
 
+## Azure DevOps service connection:
+Install the azure devops cli extension
+```
+$ az extension add --name azure-devops
+```
+
+Run:
+```bash
+$ ./create-service-connection.sh
+usage: ./create-service-connection.sh <subscription-display-name> <key_vault>
+```
+
+e.g.
+```bash
+$ ./create-service-connection.sh DCD-CFTAPPS-ITHC cftapps-ithc
+```
+
+If you need to re-run it you can add the `--force` flag after the script name.
