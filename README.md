@@ -15,7 +15,7 @@ Requires:
 * SP for AKS cluster operation
 * SP for managing resources in the subscription - Contributor on resource group(s) assigned through ops-resource-groups
 
-## Running the script: 
+## Running the script: 
 
 This script needs to be run from a user with GA access in Azure,
 It is needed to be GA so that:
@@ -40,7 +40,7 @@ If there's an error and you need to re-run you can add the `--force` argument, d
 ./run.sh --force <env-name>
 ```
 
-## GitHub secrets:
+## GitHub secrets:
 
 GitHub users need to be created manually
 The format is:
