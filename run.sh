@@ -45,10 +45,12 @@ case "${2}" in
 esac
 
 SERVER_APP_NAME="dcd_app_aks_${SUB}_${ENV}_server_v2"
+SERVER_APP_DISPLAY_NAME="AKS ${SUB} ${ENV} server"
 CLIENT_APP_NAME="dcd_app_aks_${SUB}_${ENV}_client_v2"
+CLIENT_APP_DISPLAY_NAME="AKS ${SUB} ${ENV} client"
 OPERATIONS_SP_NAME="dcd_sp_ado_${ENV}_operations_v2"
-SUBSCRIPTION_SP_NAME="http://dcd_sp_sub_${SUB}_${ENV}_v2"
-AKS_SP_NAME="http://dcd_sp_aks_${SUB}_${ENV}_v2"
+SUBSCRIPTION_SP_NAME="dcd_sp_sub_${SUB}_${ENV}_v2"
+AKS_SP_NAME="dcd_sp_aks_${SUB}_${ENV}_v2"
 
 CORE_INFRA_RG="core-infra-${ENV}-rg"
 VAULT_NAME="${SUB}-${ENV}"
@@ -131,14 +133,13 @@ if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
   az ad app delete --id http://${SERVER_APP_NAME} || true
 fi
 
-export SERVER_APP_ID=$(az ad app create --display-name ${SERVER_APP_NAME} --required-resource-accesses @server-manifest.json  --identifier-uri http://${SERVER_APP_NAME} --password ${SERVER_APP_PASSWORD} --query appId -o tsv)
+export SERVER_APP_ID=$(az ad app create --display-name "${SERVER_APP_DISPLAY_NAME}" --required-resource-accesses @server-manifest.json  --identifier-uri http://${SERVER_APP_NAME} --password ${SERVER_APP_PASSWORD} --query appId -o tsv)
 SERVER_SP_OBJECT_ID=$(az ad sp create --id ${SERVER_APP_ID} --query objectId -o tsv)
 
 keyvaultSecretSet "aks-server-sp-object-id" ${SERVER_SP_OBJECT_ID}
 keyvaultSecretSet "aks-server-app-id" ${SERVER_APP_ID}
 keyvaultSecretSet "aks-server-app-password" ${SERVER_APP_PASSWORD}
 
-echo "Ignore the warning about \"Property 'groupMembershipClaims' not found on root\""
 az ad app update --id ${SERVER_APP_ID} --set groupMembershipClaims=All
 
 sed "s/%%SERVER_APP_ID%%/${SERVER_APP_ID}/g" client-manifest.template.json > client-manifest.json
@@ -146,8 +147,14 @@ sleep 3
 
 az ad app permission admin-consent --id ${SERVER_APP_ID}
 
-CLIENT_APP_ID=$(az ad app create --display-name ${CLIENT_APP_NAME} --native-app --reply-urls http://localhost/client https://ininprodeusuxbase.microsoft.com/* --required-resource-accesses @client-manifest.json  --query appId -o tsv)
-CLIENT_SP_OBJECT_ID=$(az ad sp create --id ${CLIENT_APP_ID} --query objectId -o tsv)
+
+if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
+  EXISTING_CLIENT_APP_ID=$(az ad app list --display-name "${CLIENT_APP_DISPLAY_NAME}" --query "[0].appId" -o tsv)
+  az ad app delete --id ${EXISTING_CLIENT_APP_ID} || true
+fi
+
+CLIENT_APP_ID=$(az ad app create --display-name "${CLIENT_APP_DISPLAY_NAME}" --native-app --reply-urls http://localhost/client https://ininprodeusuxbase.microsoft.com/* --required-resource-accesses @client-manifest.json  --query appId -o tsv)
+CLIENT_SP_OBJECT_ID=$(az ad sp create --id ${CLIENT_APP_ID} --query objectId -o tsv) ||
 
 keyvaultSecretSet "aks-client-sp-object-id" ${CLIENT_SP_OBJECT_ID}
 keyvaultSecretSet "aks-client-app-id" ${CLIENT_APP_ID}
@@ -159,29 +166,32 @@ sleep 5
 az ad app permission grant --id ${CLIENT_SP_OBJECT_ID} --api ${SERVER_APP_ID}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id ${AKS_SP_NAME} || true
+  az ad sp delete --id http://${AKS_SP_NAME} || true
 fi
 
-AKS_SP=$(az ad sp create-for-rbac --skip-assignment --name ${AKS_SP_NAME})
-
-AKS_SP_APP_ID=$(echo ${AKS_SP} | jq -r .appId)
-AKS_SP_APP_PASSWORD=$(echo ${AKS_SP} | jq -r .password)
-AKS_SP_OBJECT_ID=$(az ad sp show --id ${AKS_SP_APP_ID} --query objectId -o tsv)
+AKS_SP_APP_ID=$(az ad app create --display-name "${AKS_SP_NAME}"  --identifier-uri http://${AKS_SP_NAME} --query appId -o tsv)
+AKS_SP_APP_PASSWORD=$(az ad sp credential reset --name ${AKS_SP_NAME} --query password -o tsv)
+AKS_SP_OBJECT_ID=$(az ad sp create --id ${AKS_SP_APP_ID} --query objectId -o tsv)
 
 keyvaultSecretSet "aks-sp-app-id" ${AKS_SP_APP_ID}
 keyvaultSecretSet "aks-sp-object-id" ${AKS_SP_OBJECT_ID}
 keyvaultSecretSet "aks-sp-app-password" ${AKS_SP_APP_PASSWORD}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id ${SUBSCRIPTION_SP_NAME} || true
+  az ad sp delete --id http://${SUBSCRIPTION_SP_NAME} || true
 fi
 
-SUBSCRIPTION_SP=$(az ad sp create-for-rbac --role Reader  --name ${SUBSCRIPTION_SP_NAME})
+SUBSCRIPTION_SP_APP_ID=$(az ad app create --display-name "${SUBSCRIPTION_SP_NAME}" --required-resource-accesses @sub-app-manifest.json  --identifier-uri http://${SUBSCRIPTION_SP_NAME} --query appId -o tsv)
+SUBSCRIPTION_SP_OBJECT_ID=$(az ad sp create --id ${SUBSCRIPTION_SP_APP_ID} --query objectId -o tsv)
+SUBSCRIPTION_SP=$(az ad sp credential reset --name ${SUBSCRIPTION_SP_NAME})
+
+az role assignment create  --assignee http://${SUBSCRIPTION_SP_NAME} --role Reader
+az ad app permission admin-consent --id ${SUBSCRIPTION_SP_APP_ID}
+
 SUBSCRIPTION_SP_APP_ID=$(echo ${SUBSCRIPTION_SP} | jq -r .appId)
 SUBSCRIPTION_SP_APP_PASSWORD=$(echo ${SUBSCRIPTION_SP} | jq -r .password)
-SUBSCRIPTION_SP_OBJECT_ID=$(az ad sp show --id ${SUBSCRIPTION_SP_APP_ID} --query objectId -o tsv)
 
-addKeyvaultFullAccessPolicySP ${VAULT_NAME} ${SUBSCRIPTION_SP_NAME}
+addKeyvaultFullAccessPolicySP ${VAULT_NAME} http://${SUBSCRIPTION_SP_NAME}
 
 keyvaultSecretSet "sp-app-id" ${SUBSCRIPTION_SP_APP_ID}
 keyvaultSecretSet "sp-object-id" ${SUBSCRIPTION_SP_OBJECT_ID}
@@ -189,10 +199,10 @@ keyvaultSecretSet "sp-app-password" ${SUBSCRIPTION_SP_APP_PASSWORD}
 
 echo "Server app ID: ${SERVER_APP_ID}"
 echo "Server app password: ${SERVER_APP_PASSWORD}"
-echo "Server app display name: ${SERVER_APP_NAME}"
+echo "Server app display name: ${SERVER_APP_DISPLAY_NAME}"
 
 echo "Client app ID: ${CLIENT_APP_ID}"
-echo "Client app display name: ${CLIENT_APP_NAME}"
+echo "Client app display name: ${CLIENT_APP_DISPLAY_NAME}"
 
 echo "AKS SP client id: ${AKS_SP_APP_ID}"
 echo "AKS SP client secret: ${AKS_SP_APP_PASSWORD}"
