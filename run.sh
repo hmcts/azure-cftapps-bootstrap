@@ -45,9 +45,9 @@ case "${2}" in
 esac
 
 SERVER_APP_NAME="dcd_app_aks_${SUB}_${ENV}_server_v2"
-SERVER_APP_DISPLAY_NAME="AKS ${SUB} ${ENV} Server"
+SERVER_APP_DISPLAY_NAME="AKS ${SUB} ${ENV} server"
 CLIENT_APP_NAME="dcd_app_aks_${SUB}_${ENV}_client_v2"
-CLIENT_APP_DISPLAY_NAME="AKS ${SUB} ${ENV} Client"
+CLIENT_APP_DISPLAY_NAME="AKS ${SUB} ${ENV} client"
 OPERATIONS_SP_NAME="dcd_sp_ado_${ENV}_operations_v2"
 SUBSCRIPTION_SP_NAME="dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="dcd_sp_aks_${SUB}_${ENV}_v2"
