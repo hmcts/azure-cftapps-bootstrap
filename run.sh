@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 if [ "${1}" == "--force" ] || [ "${1}" == "-f" ] ; then
   DELETE_NON_IDEMPOTENT_RESOURCES="true"
@@ -166,11 +166,11 @@ sleep 5
 az ad app permission grant --id ${CLIENT_SP_OBJECT_ID} --api ${SERVER_APP_ID}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id http://${AKS_SP_NAME} || true
+  az ad app delete --id http://${AKS_SP_NAME} || true
 fi
 
 AKS_SP_APP_ID=$(az ad app create --display-name "${AKS_SP_NAME}"  --identifier-uri http://${AKS_SP_NAME} --query appId -o tsv)
-AKS_SP_APP_PASSWORD=$(az ad sp credential reset --name ${AKS_SP_NAME} --query password -o tsv)
+AKS_SP_APP_PASSWORD=$(az ad sp credential reset --name http://${AKS_SP_NAME} --query password -o tsv)
 AKS_SP_OBJECT_ID=$(az ad sp create --id ${AKS_SP_APP_ID} --query objectId -o tsv)
 
 keyvaultSecretSet "aks-sp-app-id" ${AKS_SP_APP_ID}
@@ -178,13 +178,15 @@ keyvaultSecretSet "aks-sp-object-id" ${AKS_SP_OBJECT_ID}
 keyvaultSecretSet "aks-sp-app-password" ${AKS_SP_APP_PASSWORD}
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  az ad sp delete --id http://${SUBSCRIPTION_SP_NAME} || true
+  az ad app delete --id http://${SUBSCRIPTION_SP_NAME} || true
 fi
 
 SUBSCRIPTION_SP_APP_ID=$(az ad app create --display-name "${SUBSCRIPTION_SP_NAME}" --required-resource-accesses @sub-app-manifest.json  --identifier-uri http://${SUBSCRIPTION_SP_NAME} --query appId -o tsv)
 SUBSCRIPTION_SP_OBJECT_ID=$(az ad sp create --id ${SUBSCRIPTION_SP_APP_ID} --query objectId -o tsv)
 SUBSCRIPTION_SP=$(az ad sp credential reset --name ${SUBSCRIPTION_SP_NAME})
 
+# Principal **** does not exist in the directory ****.
+sleep 10
 az role assignment create  --assignee http://${SUBSCRIPTION_SP_NAME} --role Reader
 az ad app permission admin-consent --id ${SUBSCRIPTION_SP_APP_ID}
 
@@ -196,6 +198,8 @@ addKeyvaultFullAccessPolicySP ${VAULT_NAME} http://${SUBSCRIPTION_SP_NAME}
 keyvaultSecretSet "sp-app-id" ${SUBSCRIPTION_SP_APP_ID}
 keyvaultSecretSet "sp-object-id" ${SUBSCRIPTION_SP_OBJECT_ID}
 keyvaultSecretSet "sp-app-password" ${SUBSCRIPTION_SP_APP_PASSWORD}
+
+./generate-ssh-key.sh ${VAULT_NAME}
 
 echo "Server app ID: ${SERVER_APP_ID}"
 echo "Server app password: ${SERVER_APP_PASSWORD}"
