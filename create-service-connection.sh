@@ -32,7 +32,7 @@ SUBSCRIPTION_ID=$(az account list --query "[?name=='${SUBSCRIPTION_DISPLAY_NAME}
 TENANT_ID=$(az account list --query "[?name=='${SUBSCRIPTION_DISPLAY_NAME}'].tenantId" -o tsv)
 
 if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
-  ID=$(az devops service-endpoint list --organization https://dev.azure.com/hmcts/ --project CNP --query "[?name=='DCD-CFTAPPS-ITHC'].id" -o tsv)
+  ID=$(az devops service-endpoint list --organization https://dev.azure.com/hmcts/ --project CNP --query "[?name=='${SUBSCRIPTION_DISPLAY_NAME}'].id" -o tsv)
   if [ -z ${ID} ] ; then
     echo "Connection doesn't exist, continuing"
   else
