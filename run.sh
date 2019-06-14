@@ -31,13 +31,18 @@ case "${1}" in
 		;;
 esac
 
+INFRA_RG_PREFIX = ${ENV}
+
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
 		SUB="cftapps";;
 	"mgmt"|"MGMT"|"Mgmt")
-		SUB="mgmt";;
+		SUB="mgmt"
+		INFRA_RG_PREFIX="${SUB}-${INFRA_RG_PREFIX}"
+		;;
 	"papi"|"PAPI"|"Papi")
 		SUB="papi";;
+
 	*)
 		echo "Invalid subscription. Exiting"
 		exit 1
@@ -52,7 +57,7 @@ OPERATIONS_SP_NAME="dcd_sp_ado_${ENV}_operations_v2"
 SUBSCRIPTION_SP_NAME="dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="dcd_sp_aks_${SUB}_${ENV}_v2"
 
-CORE_INFRA_RG="core-infra-${ENV}-rg"
+CORE_INFRA_RG="core-infra-${INFRA_RG_PREFIX}-rg"
 VAULT_NAME="${SUB}-${ENV}"
 LOCATION="uksouth"
 
