@@ -14,17 +14,30 @@ case "${1}" in
 		ENV="sbox"
     LONG_ENV="sandbox"
     CRITICALITY="Low"
+    DEVOPS_GROUP="300e771f-856c-45cc-b899-40d78281e9c1"
+    PE_GROUP="c36eaede-a0ae-4967-8fed-0a02960b1370"
 		;;
 	"demo"|"DEMO"|"Demo")
 		ENV="demo"
     LONG_ENV="demo"
     CRITICALITY="Medium"
+    DEVOPS_GROUP="300e771f-856c-45cc-b899-40d78281e9c1"
+    PE_GROUP="c36eaede-a0ae-4967-8fed-0a02960b1370"    
 		;;
 	"ithc"|"ITHC"|"Ithc")
 		ENV="ithc"
     LONG_ENV="ithc"
     CRITICALITY="Medium"
+    DEVOPS_GROUP="300e771f-856c-45cc-b899-40d78281e9c1"
+    PE_GROUP="c36eaede-a0ae-4967-8fed-0a02960b1370"    
 		;;
+	"rpe"|"RPE"|"Rpe")
+		ENV="rpe"
+    LONG_ENV="rpe"
+    CRITICALITY="Low"
+    DEVOPS_GROUP="0cbaed28-e923-4927-9e2b-1b32c4f5c5f4"
+    PE_GROUP="3830f73c-22c0-436c-893d-e1869d2bc551"
+		;;    
 	*)
 		echo "Invalid environment. Exiting"
 		exit 1
@@ -125,8 +138,8 @@ az keyvault create --name ${VAULT_NAME} \
   
 # addKeyvaultFullAccessPolicy ${VAULT_NAME} 9189d86a-e260-4c3d-8227-803123cdce84 # aks-cluster-admins - for RPE tenant
 
-addKeyvaultFullAccessPolicy ${VAULT_NAME} 300e771f-856c-45cc-b899-40d78281e9c1 # devops
-addKeyvaultFullAccessPolicy ${VAULT_NAME} c36eaede-a0ae-4967-8fed-0a02960b1370 # platform-engineering
+addKeyvaultFullAccessPolicy ${VAULT_NAME} ${DEVOPS_GROUP} # devops
+addKeyvaultFullAccessPolicy ${VAULT_NAME} ${PE_GROUP} # platform-engineering
 
 OPERATIONS_SP_APP_ID=$(az ad sp list --all --query  "[?appDisplayName=='${OPERATIONS_SP_NAME}'].{ appId: appId }" -o tsv)
 
