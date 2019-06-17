@@ -11,7 +11,7 @@ if [ $? -eq 3 ] ; then
     TMP_DIR=$(mktemp -d)
     pushd ${TMP_DIR}
 
-    ssh-keygen -f key -C aks-ssh -t rsa -b 2048 -q -N ""
+    ssh-keygen -f key -C '' -t rsa -b 2048 -q -N ""
     az keyvault secret set --vault-name ${VAULT_NAME} --name aks-ssh-pub-key --file key.pub
     az keyvault secret set --vault-name ${VAULT_NAME} --name aks-ssh-private-key --file key
 
