@@ -31,13 +31,13 @@ az account set -s <sub-id>
 
 
 ```bash
-./run.sh <env-name>
+./run.sh <sbox, demo, ithc, rpe> <cftapps, mgmt, papi>
 ```
 
 If there's an error and you need to re-run you can add the `--force` argument, do not use this on an in use subscription as it will delete the SP and applications needed for AKS to function:
 
 ```bash
-./run.sh --force <env-name>
+./run.sh --force <env-name> <type>
 ```
 
 ## GitHub secrets:

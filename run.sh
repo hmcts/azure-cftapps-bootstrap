@@ -44,7 +44,7 @@ case "${1}" in
 		;;
 esac
 
-INFRA_RG_PREFIX = ${ENV}
+INFRA_RG_PREFIX=${ENV}
 
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
@@ -86,7 +86,7 @@ COMMON_TAGS=(
 )
 
 function usage() {
-  echo "usage: ./run.sh <env>" 
+  echo "usage: ./run.sh <env> <type>" 
 }
 
 function keyvaultSecretSet() {
@@ -219,15 +219,17 @@ keyvaultSecretSet "sp-app-password" ${SUBSCRIPTION_SP_APP_PASSWORD}
 
 ./generate-ssh-key.sh ${VAULT_NAME}
 
+
+# RBAC server application
 echo "Server app ID: ${SERVER_APP_ID}"
 echo "Server app password: ${SERVER_APP_PASSWORD}"
 echo "Server app display name: ${SERVER_APP_DISPLAY_NAME}"
-
+# RBAC client application
 echo "Client app ID: ${CLIENT_APP_ID}"
 echo "Client app display name: ${CLIENT_APP_DISPLAY_NAME}"
-
+# App that AKS is running on 
 echo "AKS SP client id: ${AKS_SP_APP_ID}"
 echo "AKS SP client secret: ${AKS_SP_APP_PASSWORD}"
-
+# For building infrastructure
 echo "Subscription SP app ID: ${SUBSCRIPTION_SP_APP_ID}"
 echo "Subscription SP app password: ${SUBSCRIPTION_SP_APP_PASSWORD}"
