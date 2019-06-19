@@ -1,5 +1,4 @@
 resource "azurerm_resource_group" "oms-automation" {
-  provider = "azurerm.cftapps-rpe"
 
   name     = "oms-automation-rg"
   location = "UK South"
@@ -8,7 +7,6 @@ resource "azurerm_resource_group" "oms-automation" {
 }
 
 resource "azurerm_role_assignment" "oms-automation" {
-  provider = "azurerm.cftapps-rpe"
 
   scope                = "${var.resource_groups_resource_id}${azurerm_resource_group.oms-automation.name}"
   role_definition_name = "Contributor"
@@ -16,7 +14,6 @@ resource "azurerm_role_assignment" "oms-automation" {
 }
 
 resource "azurerm_log_analytics_workspace" "oms-automation" {
-  provider            = "azurerm.cftapps-rpe"
   name                = "hmcts-rpe-law"
   location            = "${azurerm_resource_group.oms-automation.location}"
   resource_group_name = "${azurerm_resource_group.oms-automation.name}"
