@@ -32,17 +32,9 @@ resource "azurerm_role_assignment" "hmctsrpe-registry-pull" {
   principal_id         = "${data.azurerm_key_vault_secret.cftapps-aks-sp-object-id.value}"
 }
 
-resource "azurerm_resource_group" "core-infra" {
-
-  name     = "core-infra-rpe-rg"
-  location = "UK South"
-
-  tags = "${local.common_tags}"
-}
-
 resource "azurerm_role_assignment" "core-infra" {
 
-  scope                = "${var.resource_groups_resource_id}${azurerm_resource_group.core-infra.name}"
+  scope                = "${var.resource_groups_resource_id}${data.azurerm_resource_group.core-infra.name}"
   role_definition_name = "Contributor"
   principal_id         = "${data.azurerm_key_vault_secret.cftapps-sp-object-id.value}"
 }
