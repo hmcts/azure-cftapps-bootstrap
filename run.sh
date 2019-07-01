@@ -36,7 +36,7 @@ case "${1}" in
 		;;
 esac
 
-INFRA_RG_PREFIX = ${ENV}
+INFRA_RG_PREFIX="${ENV}"
 
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
