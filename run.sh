@@ -29,6 +29,7 @@ case "${1}" in
     ENV="stg"
     LONG_ENV="staging"
     CRITICALITY="High"
+    ;;
 	*)
 		echo "Invalid environment. Exiting"
 		exit 1
