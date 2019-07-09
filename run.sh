@@ -30,6 +30,11 @@ case "${1}" in
     LONG_ENV="staging"
     CRITICALITY="High"
     ;;
+  "prod"|"PROD"|"Prod")
+    ENV="prod"
+    LONG_ENV="production"
+    CRITICALITY="High"
+    ;;
 	*)
 		echo "Invalid environment. Exiting"
 		exit 1
