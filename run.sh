@@ -20,6 +20,11 @@ case "${1}" in
     LONG_ENV="demo"
     CRITICALITY="Medium"
 		;;
+  "test"|"TEST"|"Test")
+    ENV="test"
+    LONG_ENV="test"
+    CRITICALITY="Medium"
+    ;;
 	"ithc"|"ITHC"|"Ithc")
 		ENV="ithc"
     LONG_ENV="ithc"
