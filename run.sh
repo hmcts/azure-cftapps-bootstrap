@@ -9,6 +9,8 @@ else
   DELETE_NON_IDEMPOTENT_RESOURCES="false"
 fi
 
+VAULT_NAME="${SUB}-${ENV}"
+
 case "${1}" in
 	"sbox"|"SBOX"|"Sbox")
 		ENV="sbox"
@@ -39,6 +41,8 @@ case "${1}" in
     ENV="prod"
     LONG_ENV="production"
     CRITICALITY="High"
+    # for some reason this vault is already taken, snowflaking prod for now till we have a better solution
+    VAULT_NAME="cft-apps-prod"
     ;;
 	*)
 		echo "Invalid environment. Exiting"
@@ -73,7 +77,6 @@ SUBSCRIPTION_SP_NAME="dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="dcd_sp_aks_${SUB}_${ENV}_v2"
 
 CORE_INFRA_RG="core-infra-${INFRA_RG_PREFIX}-rg"
-VAULT_NAME="${SUB}-${ENV}"
 LOCATION="uksouth"
 
 COMMON_TAGS=(
