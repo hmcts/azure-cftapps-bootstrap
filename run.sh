@@ -49,7 +49,6 @@ case "${1}" in
 esac
 
 INFRA_RG_PREFIX="${ENV}"
-VAULT_NAME="${SUB}-${ENV}"
 
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
@@ -76,6 +75,7 @@ CLIENT_APP_DISPLAY_NAME="AKS ${SUB} ${ENV} client"
 OPERATIONS_SP_NAME="dcd_sp_ado_${ENV}_operations_v2"
 SUBSCRIPTION_SP_NAME="dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="dcd_sp_aks_${SUB}_${ENV}_v2"
+VAULT_NAME="${SUB}-${ENV}"
 
 CORE_INFRA_RG="core-infra-${INFRA_RG_PREFIX}-rg"
 LOCATION="uksouth"
