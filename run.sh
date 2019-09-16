@@ -61,6 +61,8 @@ case "${2}" in
 		;;
 	"papi"|"PAPI"|"Papi")
 		SUB="papi";;
+	"dmz"|"DMZ"|"Dmz")
+		SUB="dmz";;
 
 	*)
 		echo "Invalid subscription. Exiting"
