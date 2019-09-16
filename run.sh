@@ -9,8 +9,6 @@ else
   DELETE_NON_IDEMPOTENT_RESOURCES="false"
 fi
 
-VAULT_NAME="${SUB}-${ENV}"
-
 case "${1}" in
 	"sbox"|"SBOX"|"Sbox")
 		ENV="sbox"
@@ -51,6 +49,7 @@ case "${1}" in
 esac
 
 INFRA_RG_PREFIX="${ENV}"
+VAULT_NAME="${SUB}-${ENV}"
 
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
