@@ -182,7 +182,7 @@ if [ ${DELETE_NON_IDEMPOTENT_RESOURCES} == "true" ]; then
   az ad app delete --id ${EXISTING_CLIENT_APP_ID} || true
 fi
 
-CLIENT_APP_ID=$(az ad app create --display-name "${CLIENT_APP_DISPLAY_NAME}" --native-app --reply-urls http://localhost/client https://afd.hosting.portal.azure.net/monitoring/Content/iframe/infrainsights.app/web/base-libs/auth/auth.html --required-resource-accesses @client-manifest.json  --query appId -o tsv)
+CLIENT_APP_ID=$(az ad app create --display-name "${CLIENT_APP_DISPLAY_NAME}" --native-app --reply-urls https://afd.hosting.portal.azure.net/monitoring/Content/iframe/infrainsights.app/web/base-libs/auth/auth.html https://monitoring.hosting.portal.azure.net/monitoring/Content/iframe/infrainsights.app/web/base-libs/auth/auth.html --required-resource-accesses @client-manifest.json  --query appId -o tsv)
 CLIENT_SP_OBJECT_ID=$(az ad sp create --id ${CLIENT_APP_ID} --query objectId -o tsv) ||
 
 keyvaultSecretSet "aks-client-sp-object-id" ${CLIENT_SP_OBJECT_ID}
