@@ -40,6 +40,11 @@ case "${1}" in
     LONG_ENV="staging"
     CRITICALITY="High"
     ;;
+  "intsvc"|"INTSVC"|"IntSvc")
+    ENV="intsvc"
+    LONG_ENV="internal-service"
+    CRITICALITY="High"
+    ;;
   "prod"|"PROD"|"Prod")
     ENV="prod"
     LONG_ENV="production"
@@ -58,6 +63,10 @@ INFRA_RG_PREFIX="${ENV}"
 case "${2}" in
 	"cftapps"|"CFTAPPS"|"CftApps")
 		SUB="cftapps";;
+	"cftptl"|"CFTPTL"|"CftPtl")
+		SUB="cftptl";;
+	"cftsbox"|"CFTSBOX"|"CftSbox")
+		SUB="cftsbox";;
 	"mgmt"|"MGMT"|"Mgmt")
 		SUB="mgmt"
 		INFRA_RG_PREFIX="${SUB}-${INFRA_RG_PREFIX}"
