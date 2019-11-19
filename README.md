@@ -79,7 +79,7 @@ $ ./set-github-secrets DCD-MGMT-SBOX mgmt-sbox hmcts-flux-mgmt-sandbox "the-user
 ## Azure DevOps service connection:
 Install the azure devops cli extension
 ```
-$ az extension add --source az extension add --source https://github.com/Azure/azure-devops-cli-extension/releases/download/20190531.1/azure_devops-0.10.0-py2.py3-none-any.whl
+$ az extension add --source https://github.com/Azure/azure-devops-cli-extension/releases/download/20190531.1/azure_devops-0.10.0-py2.py3-none-any.whl
 ```
 
 Run:
