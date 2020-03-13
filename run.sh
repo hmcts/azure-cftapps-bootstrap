@@ -144,6 +144,8 @@ az storage account create --name ${SUB}${ENV//-/} \
   --location ${LOCATION} \
   --tags "${COMMON_TAGS[@]}" \
   --https-only true
+  
+az storage blob service-properties delete-policy update --days-retained 7  --account-name ${SUB}${ENV//-/} --enable true
 
 az storage container create  --account-name ${SUB}${ENV//-/}  --name tfstate
 
