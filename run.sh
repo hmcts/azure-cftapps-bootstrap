@@ -45,6 +45,11 @@ case "${1}" in
     LONG_ENV="internal-service"
     CRITICALITY="High"
     ;;
+  "ldata"|"LDATA"|"Ldata")
+    ENV="ldata"
+    LONG_ENV="internal-service"
+    CRITICALITY="High"
+    ;;
   "prod"|"PROD"|"Prod")
     ENV="prod"
     LONG_ENV="production"
@@ -75,6 +80,8 @@ case "${2}" in
 		SUB="papi";;
 	"dmz"|"DMZ"|"Dmz")
 		SUB="dmz";;
+	"ethos"|"ETHOS"|"Ethos")
+		SUB="ethos";;
 
 	*)
 		echo "Invalid subscription. Exiting"
