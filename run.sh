@@ -35,6 +35,11 @@ case "${1}" in
     LONG_ENV="ithc"
     CRITICALITY="Medium"
 		;;
+  "ldata"|"LDATA"|"Ldata"|"LData")
+    ENV="ldata"
+    LONG_ENV="live-data"
+    CRITICALITY="High"
+    ;;
   "stg"|"STG"|"Stg")
     ENV="stg"
     LONG_ENV="staging"
@@ -73,6 +78,8 @@ case "${2}" in
 		;;
 	"papi"|"PAPI"|"Papi")
 		SUB="papi";;
+        "ethos"|"ETHOS"|"Ethos")
+                SUB="ethos";;
 	"dmz"|"DMZ"|"Dmz")
 		SUB="dmz";;
 
