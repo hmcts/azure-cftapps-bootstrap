@@ -14,6 +14,9 @@ case "${1}" in
 		ENV="sbox"
     LONG_ENV="sandbox"
     CRITICALITY="Low"
+    LOG_NAME="hmcts-sbox-law"
+    LOG_RG="oms-automation-rg"
+    LOG_SUB="b72ab7b7-723f-4b18-b6f6-03b0f2c6a1bb"
 		;;
 	"demo"|"DEMO"|"Demo")
 		ENV="demo"
@@ -56,6 +59,8 @@ case "${1}" in
     CRITICALITY="High"
     # for some reason this vault is already taken, snowflaking prod for now till we have a better solution
     VAULT_NAME="cft-apps-prod"
+    LOG_NAME="hmcts-prod"
+    LOG_SUB="8999dec3-0104-4a27-94ee-6588559729d1"
     ;;
 	*)
 		echo "Invalid environment. Exiting"
@@ -97,6 +102,10 @@ OPERATIONS_SP_NAME="dcd_sp_ado_${ENV}_operations_v2"
 SUBSCRIPTION_SP_NAME="dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="dcd_sp_aks_${SUB}_${ENV}_v2"
 VAULT_NAME="${SUB}-${ENV}"
+
+LOG_ANALYTICS_NAME=${LOG_NAME:-"hmcts-nonprod"}
+LOG_ANALYTICS_RG=${LOG_RG:-"oms-automation"}
+LOG_ANALYTICS_SUB=${LOG_SUB:-"1c4f0704-a29e-403d-b719-b90c34ef14c9"}
 
 CORE_INFRA_RG="core-infra-${INFRA_RG_PREFIX}-rg"
 LOCATION="uksouth"
@@ -164,7 +173,18 @@ az keyvault create --name ${VAULT_NAME} \
   --enabled-for-deployment true  \
   --tags "${COMMON_TAGS[@]}" \
   --enabled-for-template-deployment true
-  
+
+if [ ${SUB} == "cftapps" ]; then
+  az monitor diagnostic-settings create  \
+    --name ${ENV}-kv-to-log-analytics \
+    --resource-group ${CORE_INFRA_RG}  \
+    --resource-type Microsoft.KeyVault/vaults \
+    --resource ${VAULT_NAME} \
+    --logs    '[{"category": "AuditEvent","enabled": true}]' \
+    --metrics '[{"category": "AllMetrics","enabled": true}]' \
+    --workspace /subscriptions/${LOG_ANALYTICS_SUB}/resourcegroups/${LOG_ANALYTICS_RG}/providers/microsoft.operationalinsights/workspaces/${LOG_ANALYTICS_NAME}
+fi
+
 # addKeyvaultFullAccessPolicy ${VAULT_NAME} 9189d86a-e260-4c3d-8227-803123cdce84 # aks-cluster-admins - for RPE tenant
 
 addKeyvaultFullAccessPolicy ${VAULT_NAME} 300e771f-856c-45cc-b899-40d78281e9c1 # devops
