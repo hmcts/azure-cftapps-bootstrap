@@ -173,16 +173,14 @@ az keyvault create --name ${VAULT_NAME} \
   --tags "${COMMON_TAGS[@]}" \
   --enabled-for-template-deployment true
 
-if [ ${SUB} == "cftapps" ]; then
-  az monitor diagnostic-settings create  \
-    --name ${ENV}-kv-to-log-analytics \
-    --resource-group ${CORE_INFRA_RG}  \
-    --resource-type Microsoft.KeyVault/vaults \
-    --resource ${VAULT_NAME} \
-    --logs    '[{"category": "AuditEvent","enabled": true}]' \
-    --metrics '[{"category": "AllMetrics","enabled": true}]' \
-    --workspace /subscriptions/${LOG_ANALYTICS_SUB}/resourcegroups/${LOG_ANALYTICS_RG}/providers/microsoft.operationalinsights/workspaces/${LOG_ANALYTICS_NAME}
-fi
+az monitor diagnostic-settings create  \
+  --name ${ENV}-kv-to-log-analytics \
+  --resource-group ${CORE_INFRA_RG}  \
+  --resource-type Microsoft.KeyVault/vaults \
+  --resource ${VAULT_NAME} \
+  --logs    '[{"category": "AuditEvent","enabled": true}]' \
+  --metrics '[{"category": "AllMetrics","enabled": true}]' \
+  --workspace /subscriptions/${LOG_ANALYTICS_SUB}/resourcegroups/${LOG_ANALYTICS_RG}/providers/microsoft.operationalinsights/workspaces/${LOG_ANALYTICS_NAME}
 
 # addKeyvaultFullAccessPolicy ${VAULT_NAME} 9189d86a-e260-4c3d-8227-803123cdce84 # aks-cluster-admins - for RPE tenant
 
