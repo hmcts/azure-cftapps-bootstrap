@@ -14,9 +14,8 @@ case "${1}" in
 		ENV="sbox"
     LONG_ENV="sandbox"
     CRITICALITY="Low"
-    LOG_NAME="hmcts-sbox-law"
-    LOG_RG="oms-automation-rg"
-    LOG_SUB="b72ab7b7-723f-4b18-b6f6-03b0f2c6a1bb"
+    LOG_NAME="hmcts-sandbox"
+    LOG_SUB="bf308a5c-0624-4334-8ff8-8dca9fd43783"
 		;;
 	"demo"|"DEMO"|"Demo")
 		ENV="demo"
@@ -103,8 +102,8 @@ SUBSCRIPTION_SP_NAME="dcd_sp_sub_${SUB}_${ENV}_v2"
 AKS_SP_NAME="dcd_sp_aks_${SUB}_${ENV}_v2"
 VAULT_NAME="${SUB}-${ENV}"
 
+LOG_ANALYTICS_RG="oms-automation"
 LOG_ANALYTICS_NAME=${LOG_NAME:-"hmcts-nonprod"}
-LOG_ANALYTICS_RG=${LOG_RG:-"oms-automation"}
 LOG_ANALYTICS_SUB=${LOG_SUB:-"1c4f0704-a29e-403d-b719-b90c34ef14c9"}
 
 CORE_INFRA_RG="core-infra-${INFRA_RG_PREFIX}-rg"
