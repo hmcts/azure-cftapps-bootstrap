@@ -184,8 +184,7 @@ az monitor diagnostic-settings create  \
 
 # addKeyvaultFullAccessPolicy ${VAULT_NAME} 9189d86a-e260-4c3d-8227-803123cdce84 # aks-cluster-admins - for RPE tenant
 
-addKeyvaultFullAccessPolicy ${VAULT_NAME} 300e771f-856c-45cc-b899-40d78281e9c1 # devops
-addKeyvaultFullAccessPolicy ${VAULT_NAME} c36eaede-a0ae-4967-8fed-0a02960b1370 # platform-engineering
+addKeyvaultFullAccessPolicy ${VAULT_NAME} e7ea2042-4ced-45dd-8ae3-e051c6551789 # DTS Platform Operations
 
 OPERATIONS_SP_APP_ID=$(az ad sp list --all --query  "[?appDisplayName=='${OPERATIONS_SP_NAME}'].{ appId: appId }" -o tsv)
 
