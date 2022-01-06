@@ -153,7 +153,7 @@ az group create --location ${LOCATION} --name ${CORE_INFRA_RG} --tags "${COMMON_
 
 az storage account create --name ${SUB}${ENV//-/} \
   --resource-group ${CORE_INFRA_RG} \
-  --sku Standard_LRS \
+  --sku Standard_ZRS \
   --encryption-services blob \
   --kind StorageV2 \
   --location ${LOCATION} \
